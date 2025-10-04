@@ -1,0 +1,16 @@
+services:
+  product-service:
+    build:
+      context: .
+      dockerfile: product-service/Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - discount-service
+
+  discount-service:
+    build:
+      context: .
+      dockerfile: discount-service/Dockerfile
+    ports:
+      - "8081:8081"
