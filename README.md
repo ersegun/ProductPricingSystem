@@ -1,4 +1,4 @@
-# CodeTest – Product & Discount Services
+# Product Pricing System – Product & Discount Services
 
 This project consists of two Kotlin-based microservices:
 
