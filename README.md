@@ -42,7 +42,7 @@ curl -X POST -H "Authorization: Bearer secret-dev-token-please-change"   -H "Con
 
 ---
 
-## 📥 Ingestion Controls
+## Ingestion Controls
 
 The project supports **data ingestion workflows** for product and discount data:
 
