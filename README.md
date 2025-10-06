@@ -16,6 +16,10 @@ Run locally via Gradle or Docker Compose.
 
 ### Prerequisites
 Java 21, Gradle 8, Docker.
+If you face problems with Java version, then you can export JAVA HOME to version 21 as follows:
+```bash
+export JAVA_HOME=$(/usr/libexec/java_home -v 21)
+```
 
 ### Gradle
 ```bash
