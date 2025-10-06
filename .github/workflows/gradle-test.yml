@@ -1,0 +1,44 @@
+name: Run Unit Tests
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+
+jobs:
+  test:
+    name: Build & Run Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Setup JDK 21
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: gradle
+
+      # 3. Make Gradle wrapper executable
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      # 4. Run Gradle tests
+      - name: Run tests
+        run: ./gradlew clean test --stacktrace
+
+      # 5. Publish test results
+      - name: Publish Test Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: |
+            **/build/test-results/test
+            **/build/reports/tests/test
