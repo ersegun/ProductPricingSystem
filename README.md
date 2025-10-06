@@ -1,55 +1,56 @@
-# Product Pricing System – Product & Discount Services
 
-This project consists of two Kotlin-based microservices:
+# Product Pricing System
 
-- **Product Service** – Manages product catalog and product data.
-- **Discount Service** – Manages discounts that can be applied to products.
+## Overview
+A simple product pricing system with two microservices built with Kotlin + Ktor for managing product prices and discounts.
 
-Both services are written in Kotlin with Ktor, built with Gradle, and designed to run together using Docker Compose.
+**Services**
+1. **Product Service** (port 8080) – applies VAT + discounts, handles ingestion.  
+2. **Discount Service** (port 8081) – stores applied discounts, enforces idempotency.
+
+Run locally via Gradle or Docker Compose.
 
 ---
 
-## 🚀 Running the Services
+## Quick Start
 
 ### Prerequisites
-- Docker & Docker Compose (Docker Desktop on macOS/Windows)
-- Java 21 (for local builds without Docker)
+Java 21, Gradle 8, Docker.
 
-### Build & Run with Docker
-
-From the project root:
-
+### Gradle
 ```bash
-docker compose up --build
+./gradlew discount-service:run
+./gradlew product-service:run
 ```
 
-- Product Service: http://localhost:8080  
-- Discount Service: http://localhost:8081  
-
-### Example Requests
-
+### Docker Compose
+Services can be run with docker compose, and make sure that Docker Desktop is up and running locally
 ```bash
-# Health checks
-curl -H "Authorization: Bearer secret-dev-token-please-change" http://localhost:8080/health
-curl -H "Authorization: Bearer secret-dev-token-please-change" http://localhost:8081/health
-
-# Get products
-curl -H "Authorization: Bearer secret-dev-token-please-change" http://localhost:8080/products
-
-# Apply discount
-curl -X POST -H "Authorization: Bearer secret-dev-token-please-change"   -H "Content-Type: application/json"   -d '{"productId":"123", "discountId":"DISC10", "percent":10}'   http://localhost:8081/discounts/apply
+docker compose up ‑‑build
 ```
+
+Services:  
+• Product → http://localhost:8080  
+• Discount → http://localhost:8081
+
+Auth header required:  
+`Authorization: Bearer secret‑dev‑token‑please‑change`
 
 ---
 
-## 📥 Ingestion Controls
+## Tests
+```bash
+./gradlew test
+```
 
-The project supports **data ingestion workflows** for product and discount data:
+Reports: `build/reports/tests/test/index.html`
 
-- **Start ingestion** → Triggered by API call (e.g., `/admin/ingest/{id}/start`)
-- **Parse** → Raw data is parsed into structured objects.
-- **Validate** → Business rules and schema validation applied.
-- **Write** → Data stored in memory or persistent storage.
-- **Status** → Ingestion status retrievable via `/admin/ingest/{id}/status`.
+---
 
-This design allows monitoring ingestion pipelines while keeping services decoupled.
+## Design Highlights
+- **Separation of concerns:** Product and Discount logic are placed as microservices.
+- **In‑memory stores** via `ConcurrentHashMap`.  (I did not implement a database connection for this task.)
+- **Kotlin coroutines** for parallel ingest.
+- **Docker Compose** for simple local orchestration.  
+
+
